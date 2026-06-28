@@ -113,4 +113,4 @@ if __name__ == "__main__":
     print("Price with -20%:", svc.apply_discount(20))  # does not change svc.price
 
     svc.is_available()
-    print("Available", svc.is_available())
+    print("Available", svc.is_available()) 
