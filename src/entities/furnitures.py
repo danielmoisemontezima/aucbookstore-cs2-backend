@@ -1,87 +1,86 @@
 from enum import Enum
 
 
-class StatutFourniture(Enum):
-    DISPONIBLE = "Disponible"
-    CRITIQUE = "Critique"
-    EN_RUPTURE = "En rupture"
+class FurnitureStatus(Enum):
+    AVAILABLE = "available"
+    CRITICAL = "Critical"
+    OUT_OF_STOCK = "in stock"
 
 
-class Fourniture:
-    def __init__(self, id: int, nom: str, description: str,
-                 categorie: str, quantite_stock: int,
-                 prix_unitaire: float, fournisseur: str,
-                 seuil_alerte: int = 5):
-
-        # Tout validasyon yo gwoupe nan yon sèl metòd
-        self._valider(nom, prix_unitaire, quantite_stock, seuil_alerte)
+class Furniture:
+    def __init__(self, id: int, name: str, description: str,
+                 category: str, stock_quantity: int,
+                 unit_price: float, supplier: str,
+                 alert_threshold: int = 5):
+``
+        # all validation 
+        self._validate(name, unit_price, stock_quantity, alert_threshold)
 
         self.id = id
-        self.nom: str = nom
+        self.name: str = name
         self.description = description
-        self.categorie = categorie
-        self.quantite_stock = quantite_stock
-        self.prix_unitaire = prix_unitaire
-        self.fournisseur = fournisseur
-        self.seuil_alerte = seuil_alerte
-        # Pa gen self.statut = ... isit la, paske 'statut' se yon @property
-        # ki kalkile l otomatikman pi ba a, depi quantite_stock ak seuil_alerte.
+        self.category = category
+        self.stock_quantity = stock_quantity
+        self.unit_price = unit_price
+        self.supplier = supplier
+        self.alert_threshold = alert_threshold
+       
 
-    def _valider(self, nom: str, prix_unitaire: float,
-                 quantite_stock: int, seuil_alerte: int) -> None:
-        """Tout règ validasyon pou yon Fourniture."""
-        if not nom.strip():
-            raise ValueError("Le nom est obligatoire.")
-        if prix_unitaire <= 0:
-            raise ValueError("Le prix unitaire doit être positif.")
-        if quantite_stock < 0:
-            raise ValueError("La quantité en stock ne peut pas être négative.")
-        if seuil_alerte < 0:
-            raise ValueError("Le seuil d'alerte ne peut pas être négatif.")
+    def _validate(self, name: str, unit_price: float,
+                  stock_quantity: int, alert_threshold: int) -> None:
+        """all rules for this class"""
+        if not name.strip():
+            raise ValueError("Name is required.")
+        if unit_price <= 0:
+            raise ValueError("Unit price must be positive.")
+        if stock_quantity < 0:
+            raise ValueError("Stock quantity cannot be negative.")
+        if alert_threshold < 0:
+            raise ValueError("Alert threshold cannot be negative.")
 
-    def ajouter_stock(self, quantite: int):
-        if quantite <= 0:
-            raise ValueError("La quantité à ajouter doit être supérieure à 0.")
-        self.quantite_stock += quantite
+    def add_stock(self, quantity: int):
+        if quantity <= 0:
+            raise ValueError("Quantity to add must be greater than 0.")
+        self.stock_quantity += quantity
 
-    def retirer_stock(self, quantite: int):
-        if quantite <= 0:
-            raise ValueError("La quantité à retirer doit être supérieure à 0.")
-        if quantite > self.quantite_stock:
-            raise ValueError("Stock insuffisant.")
-        self.quantite_stock -= quantite
+    def remove_stock(self, quantity: int):
+        if quantity <= 0:
+            raise ValueError("Quantity to remove must be greater than 0.")
+        if quantity > self.stock_quantity:
+            raise ValueError("Insufficient stock.")
+        self.stock_quantity -= quantity
 
-    def est_en_stock_critique(self) -> bool:
-        return self.quantite_stock <= self.seuil_alerte
+    def is_stock_critical(self) -> bool:
+        return self.stock_quantity <= self.alert_threshold
 
     @property
-    def statut(self) -> StatutFourniture:
+    def status(self) -> FurnitureStatus:
         """Statut kalkile otomatikman selon kantite stock la."""
-        if self.quantite_stock == 0:
-            return StatutFourniture.EN_RUPTURE
-        elif self.quantite_stock <= self.seuil_alerte:
-            return StatutFourniture.CRITIQUE
+        if self.stock_quantity == 0:
+            return FurnitureStatus.OUT_OF_STOCK
+        elif self.stock_quantity <= self.alert_threshold:
+            return FurnitureStatus.CRITICAL
         else:
-            return StatutFourniture.DISPONIBLE
+            return FurnitureStatus.AVAILABLE
 
     def __str__(self):
         return (
-            f"Fourniture(id={self.id}, nom='{self.nom}', "
-            f"stock={self.quantite_stock}, "
-            f"prix={self.prix_unitaire}, "
-            f"statut={self.statut.value})"
+            f"Furniture(id={self.id}, name='{self.name}', "
+            f"stock={self.stock_quantity}, "
+            f"price={self.unit_price}, "
+            f"status={self.status.value})"
         )
 
 
-# Création d'un objet Fourniture
-f = Fourniture(
+# DEMO
+f = Furniture(
     id=12,
-    nom="Kaye",
+    name="Kaye",
     description="Pour prendre des notes",
-    categorie="Papeterie",
-    quantite_stock=20,
-    prix_unitaire=1.50,
-    fournisseur="Papeterie ABC",
-    seuil_alerte=5
+    category="Papeterie",
+    stock_quantity=20,
+    unit_price=1.50,
+    supplier="Papeterie ABC",
+    alert_threshold=5
 )
 print(f)
