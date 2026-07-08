@@ -74,12 +74,14 @@ class Feedback:
 
     # --- Champs obligatoires --
     #order_id: OrderId          # Type fort au lieu de str  #commenté pour l'instant, car OrderId n'est pas défini dans ce contexte.
-    comment: Optional[str] = None
+    def __init__(self, order_id: str, comment: str):
+        self.order_id = order_id
+        self.comment = comment
 
   
-    feedback_id: str = field(default_factory=lambda: str(uuid.uuid4()))
-    status: FeedbackStatus = field(default=FeedbackStatus.PENDING)
-    date_time: datetime = field(default_factory=_now)
+    self.feedback_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    self.status: FeedbackStatus = field(default=FeedbackStatus.PENDING)
+    self.date_time: datetime = field(default_factory=_now)
 
     def __post_init__(self) -> None:
         """
@@ -93,10 +95,11 @@ class Feedback:
 #        if not isinstance(self.order_id, OrderId):
 #            raise ValueError("order_id doit être une instance de OrderId.")
         # Vérification du commentaire
+        if self.order_id is not None and not isinstance(self.order_id, str):
+            raise ValueError("order_id doit être une chaîne de caractères.")
+
         if self.comment is not None and not isinstance(self.comment, str):
             raise ValueError("comment doit être une chaîne de caractères ou None.")
-        if not isinstance(self.date_time, datetime):
-            raise ValueError("date_time doit être un objet datetime.")
         #  commentaire (si présent)
         if self.comment is not None:
             self.comment = self.comment.strip()
