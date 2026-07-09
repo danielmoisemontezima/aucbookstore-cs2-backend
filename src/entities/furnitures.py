@@ -12,7 +12,7 @@ class Furniture:
                  category: str, stock_quantity: int,
                  unit_price: float, supplier: str,
                  alert_threshold: int = 5):
-``
+
         # all validation 
         self._validate(name, unit_price, stock_quantity, alert_threshold)
 
